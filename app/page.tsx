@@ -33,7 +33,8 @@ export default function Home() {
   const [height, setHeight] = useState(768);
   const [steps, setSteps] = useState(3);
   const [generations, setGenerations] = useState<Generation[]>([]);
-  let [activeIndex, setActiveIndex] = useState<number>();
+  const [activeIndex, setActiveIndex] = useState<number>();
+  const [isEnlarged, setIsEnlarged] = useState(false);
 
   const { data: image, isFetching } = useQuery({
     placeholderData: (previousData) => previousData,
@@ -94,7 +95,7 @@ export default function Home() {
     }
   }, [activeIndex, generations]);
 
-  let activeImage =
+  const activeImage =
     activeIndex !== undefined ? generations[activeIndex].image : undefined;
 
   const handleDownload = () => {
@@ -120,18 +121,51 @@ export default function Home() {
     URL.revokeObjectURL(url);
   };
 
+  const handleImageClick = () => {
+    if (activeImage) {
+      setIsEnlarged(!isEnlarged);
+    }
+  };
+
   return (
-    <div className="flex h-full flex-col px-5">
-      <header className="flex justify-center mb-16 mt-12 md:mt-16">
-        <div className="text-2xl font-bold text-gray-200">
+    <div className="flex min-h-screen flex-col bg-black px-4">
+      {isEnlarged && activeImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setIsEnlarged(false)}
+        >
+          <div className="relative max-h-screen max-w-screen-xl overflow-auto p-4">
+            <Image
+              width={1024}
+              height={1024}
+              src={`data:image/png;base64,${activeImage.b64_json}`}
+              alt=""
+              className="max-h-[90vh] w-auto rounded-lg object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDownload();
+              }}
+              className="absolute bottom-8 right-8 bg-gray-200/80 text-gray-600 hover:bg-gray-300/90 backdrop-blur-sm"
+            >
+              Download
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <header className="py-6 sm:py-8 text-center">
+        <div className="text-xl font-bold text-gray-200 sm:text-2xl">
           FluxTogether<span className="text-sm text-gray-300">[free]</span>
         </div>
       </header>
 
-      <div className="flex justify-center">
-        <form className="w-full max-w-lg">
+      <div className="mx-auto w-full max-w-lg">
+        <form>
           <fieldset>
-            <div className="relative">
+            <div className="space-y-4">
               <Textarea
                 rows={4}
                 spellCheck={false}
@@ -139,16 +173,16 @@ export default function Home() {
                 required
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="w-full resize-none rounded-lg border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
+                className="w-full resize-none rounded-lg border-0 bg-[#27272a] px-4 py-3 text-base text-gray-200 placeholder-gray-400 focus:ring-0"
               />
               <div className="mt-3 space-y-3">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-4">
                   <div className="flex items-center gap-2">
                     <label className="text-sm text-gray-200">Width</label>
                     <select
                       value={width}
                       onChange={(e) => setWidth(Number(e.target.value))}
-                      className="rounded bg-gray-400 px-2 py-1 text-sm"
+                      className="rounded bg-[#27272a] px-2 py-1 text-sm text-gray-200 border-0 focus:ring-0"
                     >
                       <option value={512}>512px</option>
                       <option value={768}>768px</option>
@@ -160,7 +194,7 @@ export default function Home() {
                     <select
                       value={height}
                       onChange={(e) => setHeight(Number(e.target.value))}
-                      className="rounded bg-gray-400 px-2 py-1 text-sm"
+                      className="rounded bg-[#27272a] px-2 py-1 text-sm text-gray-200 border-0 focus:ring-0"
                     >
                       <option value={512}>512px</option>
                       <option value={768}>768px</option>
@@ -172,7 +206,7 @@ export default function Home() {
                     <select
                       value={steps}
                       onChange={(e) => setSteps(Number(e.target.value))}
-                      className="rounded bg-gray-400 px-2 py-1 text-sm"
+                      className="rounded bg-[#27272a] px-2 py-1 text-sm text-gray-200 border-0 focus:ring-0"
                     >
                       <option value={1}>1</option>
                       <option value={2}>2</option>
@@ -206,65 +240,75 @@ export default function Home() {
         </form>
       </div>
 
-      <div className="flex w-full grow flex-col items-center justify-center pb-8 pt-4 text-center">
+      <div className="mx-auto mt-6 w-full max-w-2xl flex-1 px-0 sm:px-4">
         {generations.length === 0 ? (
-          <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
-            <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
+          <div className="flex h-full flex-col items-center justify-center text-center">
+            <p className="text-xl font-semibold text-gray-200 sm:text-2xl">
               Get flux-y with your images
             </p>
-            <p className="mt-4 text-balance text-sm text-gray-300 md:text-base lg:text-lg">
+            <p className="mt-2 text-balance text-sm text-gray-400 sm:text-base">
               Enter a prompt and generate images in milliseconds
             </p>
           </div>
         ) : (
-          <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
-            <div className="relative flex aspect-[4/3] items-center justify-center">
-              {activeImage ? (
-                <>
+          <div className="space-y-4">
+            <div className="relative mx-auto aspect-[4/3] w-full max-w-xl overflow-hidden rounded-lg bg-gray-800/50">
+              <div 
+                className="relative h-full w-full cursor-pointer"
+                onClick={handleImageClick}
+              >
+                {activeImage ? (
+                  <>
+                    <Image
+                      placeholder="blur"
+                      blurDataURL={imagePlaceholder.blurDataURL}
+                      width={640}
+                      height={640}
+                      src={`data:image/png;base64,${activeImage.b64_json}`}
+                      alt=""
+                      className={`${
+                        isFetching ? "animate-pulse" : ""
+                      } h-full w-full object-contain p-2 transition-transform hover:scale-[1.02]`}
+                    />
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDownload();
+                      }}
+                      className="absolute bottom-4 right-4 bg-gray-200/80 text-gray-600 hover:bg-gray-300/90 backdrop-blur-sm"
+                    >
+                      Download
+                    </Button>
+                  </>
+                ) : (
                   <Image
-                    placeholder="blur"
-                    blurDataURL={imagePlaceholder.blurDataURL}
-                    width={1024}
-                    height={768}
-                    src={`data:image/png;base64,${activeImage.b64_json}`}
+                    src={imagePlaceholder}
                     alt=""
-                    className={`${isFetching ? "animate-pulse" : ""} max-w-full rounded-lg object-cover shadow-sm shadow-black`}
+                    className="h-full w-full object-contain p-2 opacity-50"
                   />
-                  <Button
-                    onClick={handleDownload}
-                    className="absolute bottom-4 right-4 bg-gray-200/80 text-gray-600 hover:bg-gray-300/90 backdrop-blur-sm"
-                  >
-                    Download
-                  </Button>
-                </>
-              ) : (
-                <Image
-                  src={imagePlaceholder}
-                  alt=""
-                  className="max-w-full rounded-lg object-cover opacity-50"
-                />
-              )}
+                )}
+              </div>
             </div>
 
-            <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
+            <div className="no-scrollbar flex gap-2 overflow-x-auto pb-4 sm:gap-4">
               {generations.map((generation, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveIndex(i)}
-                  className={`relative min-w-[256px] overflow-hidden rounded-lg ${
+                  className={`relative aspect-[4/3] w-24 flex-shrink-0 overflow-hidden rounded-lg bg-gray-800/50 sm:w-32 ${
                     i === activeIndex
-                      ? "ring-2 ring-gray-200 ring-offset-2 ring-offset-gray-500"
+                      ? "ring-2 ring-gray-200 ring-offset-2 ring-offset-gray-900"
                       : ""
                   }`}
                 >
                   <Image
                     placeholder="blur"
                     blurDataURL={imagePlaceholder.blurDataURL}
-                    width={256}
-                    height={192}
+                    width={128}
+                    height={96}
                     src={`data:image/png;base64,${generation.image.b64_json}`}
                     alt=""
-                    className="aspect-[4/3] object-cover"
+                    className="h-full w-full object-contain p-1"
                   />
                 </button>
               ))}
@@ -273,7 +317,7 @@ export default function Home() {
         )}
       </div>
 
-      <footer className="text-center text-sm text-gray-300 pb-4">
+      <footer className="py-4 text-center text-sm text-gray-400">
         Powered by Shalabi
       </footer>
     </div>
