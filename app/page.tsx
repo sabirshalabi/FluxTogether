@@ -218,23 +218,32 @@ export default function Home() {
           </div>
         ) : (
           <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
-            <div className="relative">
-              <Image
-                placeholder="blur"
-                blurDataURL={imagePlaceholder.blurDataURL}
-                width={1024}
-                height={768}
-                src={`data:image/png;base64,${activeImage.b64_json}`}
-                alt=""
-                className={`${isFetching ? "animate-pulse" : ""} max-w-full rounded-lg object-cover shadow-sm shadow-black`}
-              />
-              <Button
-                onClick={handleDownload}
-                className="absolute bottom-4 right-4 bg-gray-200/80 text-gray-600 hover:bg-gray-300/90 backdrop-blur-sm"
-                disabled={!activeImage}
-              >
-                Download
-              </Button>
+            <div className="relative flex aspect-[4/3] items-center justify-center">
+              {activeImage ? (
+                <>
+                  <Image
+                    placeholder="blur"
+                    blurDataURL={imagePlaceholder.blurDataURL}
+                    width={1024}
+                    height={768}
+                    src={`data:image/png;base64,${activeImage.b64_json}`}
+                    alt=""
+                    className={`${isFetching ? "animate-pulse" : ""} max-w-full rounded-lg object-cover shadow-sm shadow-black`}
+                  />
+                  <Button
+                    onClick={handleDownload}
+                    className="absolute bottom-4 right-4 bg-gray-200/80 text-gray-600 hover:bg-gray-300/90 backdrop-blur-sm"
+                  >
+                    Download
+                  </Button>
+                </>
+              ) : (
+                <Image
+                  src={imagePlaceholder}
+                  alt=""
+                  className="max-w-full rounded-lg object-cover opacity-50"
+                />
+              )}
             </div>
 
             <div className="mt-4 flex gap-4 overflow-x-scroll pb-4">
