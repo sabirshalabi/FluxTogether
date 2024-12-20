@@ -252,7 +252,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
-            <div className="relative mx-auto h-[512px] w-[512px] sm:h-[640px] sm:w-[640px]">
+            <div className="relative mx-auto h-[400px] w-[400px] sm:h-[640px] sm:w-[640px]">
               <div 
                 className="relative h-full w-full cursor-pointer"
                 onClick={handleImageClick}
@@ -290,12 +290,12 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-4 flex gap-4 overflow-x-auto pb-4">
+            <div className="mt-4 flex gap-2 overflow-x-auto pb-4 sm:gap-4">
               {generations.map((generation, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveIndex(i)}
-                  className={`relative h-32 w-32 flex-shrink-0 overflow-hidden rounded-lg sm:h-48 sm:w-48 ${
+                  className={`relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg sm:h-48 sm:w-48 ${
                     i === activeIndex
                       ? "ring-2 ring-gray-200 ring-offset-2 ring-offset-gray-500"
                       : ""
