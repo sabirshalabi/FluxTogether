@@ -4,8 +4,5 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "outputDirectory": ".next",
-  "regions": ["iad1"],
-  "env": {
-    "TOGETHER_API_KEY": "@together_api_key"
-  }
+  "regions": ["iad1"]
 }
