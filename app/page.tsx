@@ -128,7 +128,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-black px-4">
+    <div className="flex h-full flex-col px-5">
       {isEnlarged && activeImage && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
@@ -156,16 +156,16 @@ export default function Home() {
         </div>
       )}
 
-      <header className="py-6 sm:py-8 text-center">
-        <div className="text-xl font-bold text-gray-200 sm:text-2xl">
+      <header className="flex justify-center mb-16 mt-12 md:mt-16">
+        <div className="text-2xl font-bold text-gray-200">
           FluxTogether<span className="text-sm text-gray-300">[free]</span>
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-lg">
-        <form>
+      <div className="flex justify-center">
+        <form className="w-full max-w-lg">
           <fieldset>
-            <div className="space-y-4">
+            <div className="relative">
               <Textarea
                 rows={4}
                 spellCheck={false}
@@ -173,16 +173,16 @@ export default function Home() {
                 required
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="w-full resize-none rounded-lg border-0 bg-[#27272a] px-4 py-3 text-base text-gray-200 placeholder-gray-400 focus:ring-0"
+                className="w-full resize-none rounded-lg border-gray-300 border-opacity-50 bg-gray-400 px-4 text-base placeholder-gray-300"
               />
               <div className="mt-3 space-y-3">
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2">
                     <label className="text-sm text-gray-200">Width</label>
                     <select
                       value={width}
                       onChange={(e) => setWidth(Number(e.target.value))}
-                      className="rounded bg-[#27272a] px-2 py-1 text-sm text-gray-200 border-0 focus:ring-0"
+                      className="rounded bg-gray-400 px-2 py-1 text-sm"
                     >
                       <option value={512}>512px</option>
                       <option value={768}>768px</option>
@@ -194,7 +194,7 @@ export default function Home() {
                     <select
                       value={height}
                       onChange={(e) => setHeight(Number(e.target.value))}
-                      className="rounded bg-[#27272a] px-2 py-1 text-sm text-gray-200 border-0 focus:ring-0"
+                      className="rounded bg-gray-400 px-2 py-1 text-sm"
                     >
                       <option value={512}>512px</option>
                       <option value={768}>768px</option>
@@ -206,7 +206,7 @@ export default function Home() {
                     <select
                       value={steps}
                       onChange={(e) => setSteps(Number(e.target.value))}
-                      className="rounded bg-[#27272a] px-2 py-1 text-sm text-gray-200 border-0 focus:ring-0"
+                      className="rounded bg-gray-400 px-2 py-1 text-sm"
                     >
                       <option value={1}>1</option>
                       <option value={2}>2</option>
@@ -240,19 +240,19 @@ export default function Home() {
         </form>
       </div>
 
-      <div className="mx-auto mt-6 w-full max-w-2xl flex-1 px-0 sm:px-4">
+      <div className="flex w-full grow flex-col items-center justify-center pb-8 pt-4 text-center">
         {generations.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center text-center">
-            <p className="text-xl font-semibold text-gray-200 sm:text-2xl">
+          <div className="max-w-xl md:max-w-4xl lg:max-w-3xl">
+            <p className="text-xl font-semibold text-gray-200 md:text-3xl lg:text-4xl">
               Get flux-y with your images
             </p>
-            <p className="mt-2 text-balance text-sm text-gray-400 sm:text-base">
+            <p className="mt-4 text-balance text-sm text-gray-300 md:text-base lg:text-lg">
               Enter a prompt and generate images in milliseconds
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="relative mx-auto aspect-[4/3] w-full max-w-xl overflow-hidden rounded-lg bg-gray-800/50">
+          <div className="mt-4 flex w-full max-w-4xl flex-col justify-center">
+            <div className="relative mx-auto h-[512px] w-[512px] sm:h-[640px] sm:w-[640px]">
               <div 
                 className="relative h-full w-full cursor-pointer"
                 onClick={handleImageClick}
@@ -268,7 +268,7 @@ export default function Home() {
                       alt=""
                       className={`${
                         isFetching ? "animate-pulse" : ""
-                      } h-full w-full object-contain p-2 transition-transform hover:scale-[1.02]`}
+                      } h-full w-full rounded-lg object-contain p-2 shadow-sm shadow-black transition-transform hover:scale-[1.02]`}
                     />
                     <Button
                       onClick={(e) => {
@@ -284,28 +284,28 @@ export default function Home() {
                   <Image
                     src={imagePlaceholder}
                     alt=""
-                    className="h-full w-full object-contain p-2 opacity-50"
+                    className="h-full w-full rounded-lg object-contain p-2 opacity-50"
                   />
                 )}
               </div>
             </div>
 
-            <div className="no-scrollbar flex gap-2 overflow-x-auto pb-4 sm:gap-4">
+            <div className="mt-4 flex gap-4 overflow-x-auto pb-4">
               {generations.map((generation, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveIndex(i)}
-                  className={`relative aspect-[4/3] w-24 flex-shrink-0 overflow-hidden rounded-lg bg-gray-800/50 sm:w-32 ${
+                  className={`relative h-32 w-32 flex-shrink-0 overflow-hidden rounded-lg sm:h-48 sm:w-48 ${
                     i === activeIndex
-                      ? "ring-2 ring-gray-200 ring-offset-2 ring-offset-gray-900"
+                      ? "ring-2 ring-gray-200 ring-offset-2 ring-offset-gray-500"
                       : ""
                   }`}
                 >
                   <Image
                     placeholder="blur"
                     blurDataURL={imagePlaceholder.blurDataURL}
-                    width={128}
-                    height={96}
+                    width={192}
+                    height={192}
                     src={`data:image/png;base64,${generation.image.b64_json}`}
                     alt=""
                     className="h-full w-full object-contain p-1"
@@ -317,7 +317,7 @@ export default function Home() {
         )}
       </div>
 
-      <footer className="py-4 text-center text-sm text-gray-400">
+      <footer className="text-center text-sm text-gray-300 pb-4">
         Powered by Shalabi
       </footer>
     </div>
