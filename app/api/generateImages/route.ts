@@ -28,9 +28,10 @@ export async function POST(req: Request) {
     });
 
     return Response.json(response.data[0]);
-  } catch (e: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return Response.json(
-      { error: e.toString() },
+      { error: errorMessage },
       { status: 500 }
     );
   }
