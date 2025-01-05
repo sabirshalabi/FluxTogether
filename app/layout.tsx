@@ -21,6 +21,15 @@ export const metadata: Metadata = {
   title,
   description,
   metadataBase: new URL(url),
+  manifest: "/manifest.json",
+  viewport: {
+    themeColor: "#000000",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: title,
+  },
   openGraph: {
     title,
     description,
@@ -40,6 +49,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
+      <head>
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then(function(registration) {
+                      console.log('SW registered: ', registration);
+                    })
+                    .catch(function(error) {
+                      console.log('SW registration failed: ', error);
+                    });
+                });
+              }
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} dark h-full min-h-full bg-[length:6px] font-mono text-gray-100 antialiased`}
       >
