@@ -23,8 +23,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(url),
   manifest: "/manifest.json",
   viewport: {
-    themeColor: "#000000",
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
   },
+  themeColor: "#000000",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
